@@ -1,4 +1,29 @@
 ROTATE 3
 
+IF BLOCKEDP [MOVE 1
+NOP]
 
-line3
+(BLOCK
+IF BLOCKEDP [MOVE 1
+NOP]
+LEFT 90
+)
+
+DEFINE one 1
+
+TO foo :c :p
+OUTPUT
+DROP :c
+FREE :p
+MOVE n
+END
+foo 1 3
+
+
+TO goend
+output IF !BLOCKEDP [
+    (BLOCK MOVE 1
+           goEnd)
+    NOP
+   ]
+END

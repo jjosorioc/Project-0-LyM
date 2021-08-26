@@ -7,7 +7,7 @@ from typing import FrozenSet
 with open("commands.txt", "r") as cmdFile:
 
     lines = cmdFile.read()
-
+    
     lista_comandos = {
         'MOVE': 'int',
         'RIGHT': 'int',
