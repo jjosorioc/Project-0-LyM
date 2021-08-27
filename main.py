@@ -1,7 +1,9 @@
+"""
+Project 0
+- Juan José Osorio (@jjosorioc)
+- Luis Rubiano (@larubiano)
+"""
 
-
-
-from typing import FrozenSet
 
 
 def filterByCommand(lines: list[str])->list[str]:
