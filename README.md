@@ -1,5 +1,5 @@
 # Project-0-LyM
-Juan José Osorio y Luis Alejandro Rubiano
+Juan José Osorio and Luis Alejandro Rubiano
 
 
 ###
