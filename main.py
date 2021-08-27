@@ -4,10 +4,58 @@
 from typing import FrozenSet
 
 
+def filterByCommand(lines: list[str])->list[str]:
+    """Function to separate each command in the "commands.txt" file.
+    
+    Args:
+        lines (list[str]): Method readlines() for the commands.txt file.
+
+    Returns:
+        list[str]: Each index is its own command.
+    """
+    indice = 0 # First index of 'lines'
+    indiceDelComando = indice + 1 # Second index of 'lines' // It's the last index of each command.
+    
+    nuevaLista = [] # List the function will return
+    
+    while (indiceDelComando < len(lines)):
+
+        if (lines[indiceDelComando] == "\n"):
+            cadenaDelComando = "" #String that will be appended to the list. It's a string with the command.
+
+            for numero in range(indice, indiceDelComando):  #Iterates to get all words in the command.
+                cadenaDelComando = cadenaDelComando + lines[numero]
+
+            if cadenaDelComando != '':
+                nuevaLista.append(" ".join(cadenaDelComando.split()))
+
+            indice = indiceDelComando
+            indiceDelComando = indice + 1
+
+        
+        if (indiceDelComando < len(lines) and lines[indice]=="\n" and lines[indiceDelComando] == "\n"):
+            indice += 2
+            indiceDelComando += 2
+
+        
+        else:
+            indiceDelComando += 1
+        
+    return nuevaLista
+
+
+
+
 with open("commands.txt", "r") as cmdFile:
 
-    lines = cmdFile.read()
+    lines = cmdFile.readlines()
+    lines.append("\n")
+
+
     
+    print(filterByCommand(lines))
+
+
     lista_comandos = {
         'MOVE': 'int',
         'RIGHT': 'int',
@@ -27,7 +75,7 @@ with open("commands.txt", "r") as cmdFile:
         "BLOCKEDP": None, #es un boolean
         "NOP": None, #Robot doesn't do shit
     }
-
+    
     #     Falta esto:
     #     A block of commands: (BLOCK commands) where commands is simply a se-
     # quence of one or more commands (separated by new lines).
