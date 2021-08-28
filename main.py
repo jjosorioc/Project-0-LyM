@@ -5,19 +5,17 @@ Project 0
 """
 
 
-# SETTINGS
+##################################### SETTINGS #####################################
 
-
-import os
 FILE_NAME = "commands.txt" #Name of the text file 
 
 
-# CONSTANTS 
+##################################### CONSTANTS ##################################### 
 
 BASE_TEN_NUMBERS_ALPHABET = "0123456789" #An alphabet with all the possible symbols that can be found in a base ten number.
 
 
-# DATA STRUCTURES
+##################################### DATA #####################################
 
 VARIABLE_DICTIONARY = {} #Python dictionary of all posible user created variables
 
@@ -55,7 +53,7 @@ COMMAND_DICTIONARY["REPEAT"][1] = list(COMMAND_DICTIONARY.keys()) #Python list o
 
 
 
-# FUNCTIONS
+##################################### FUNCTIONS #####################################
 
 
 def openFile(file_name: str)->list[str]:
@@ -134,26 +132,25 @@ def addVariableIfInteger(name, value):
 
 
 
-# EXECUTION
 
 #####def defineFunction():
 
-if __name__ == "__main__":
-    inputTxt = openFile(FILE_NAME)
-    commandsInputFile = filterByCommand(inputTxt)
 
 
-# DEBUG
 
-# EXECUTION
+##################################### EXECUTION #####################################
 
-for ᵃ in commandsInputFile: print(ᵃ)
+
+
 
 if __name__ == "__main__":
     inputTxt = openFile(FILE_NAME)
     commandsInputFile = filterByCommand(inputTxt)
 
     print(commandsInputFile)
+
+
+
 
 #TODO:
 #   Verificar recursión
