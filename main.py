@@ -202,7 +202,9 @@ if __name__ == "__main__":
     inputTxt = openFile(FILE_NAME)
     commandsInputFile = filterByCommand(inputTxt)
 
+
 # DEBUG
+
 
 for ᵃ in commandsInputFile: print(ᵃ)
 
