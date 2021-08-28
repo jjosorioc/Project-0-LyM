@@ -7,18 +7,22 @@ Project 0
 
 ##################################### SETTINGS #####################################
 
+
+import os
 FILE_NAME = "commands.txt" #Name of the text file 
 
 
 ##################################### CONSTANTS ##################################### 
 
+
 BASE_TEN_NUMBERS_ALPHABET = "0123456789" #An alphabet with all the possible symbols that can be found in a base ten number.
+LOWERCASE_ALPHABET = "abcdefghijklmnopqrstuvwxyz" #An alphabet with all the possible symbols that can be found in a base ten number.
 
 
 ##################################### DATA #####################################
 
-VARIABLE_DICTIONARY = {} #Python dictionary of all posible user created variables
 
+VARIABLE_DICTIONARY = {} #Python dictionary of all posible user created variables
 
 COMMAND_DICTIONARY = {
         'MOVE': 'int',
@@ -44,13 +48,10 @@ COMMAND_DICTIONARY = {
         "IF": ("BLOCKEDP",'!BLOCKEDP'), # tuple -> (bool,bool)
         "DEFINE": ('variable_name', 'int'), # tuple -> (str, int)
         'TO': ('f',) #????
-
 }
 
 COMMAND_DICTIONARY["BLOCK"] = list(COMMAND_DICTIONARY.keys()) #Python list of all the posible commands
 COMMAND_DICTIONARY["REPEAT"][1] = list(COMMAND_DICTIONARY.keys()) #Python list of all the posible commands
-
-
 
 
 ##################################### FUNCTIONS #####################################
@@ -69,8 +70,6 @@ def openFile(file_name: str)->list[str]:
         lines = cmdFile.readlines()
         lines.append("\n")
     return lines
-
-
 
 
 def filterByCommand(lines: list[str])->list[str]:
@@ -111,9 +110,51 @@ def filterByCommand(lines: list[str])->list[str]:
     return nuevaLista
 
 
+def verifyIsInAlphabet(sequence_of_symbols, alphabet)->bool:
+    """Function to verify a sequence of symbols is over a given alphabet.
+    
+    Args:
+        sequence_of_symbols: An arbitrary sequence of symbols.
+        alphabet: An alphabet
+
+    Returns:
+        (bool): Is the sequence of symbols over the alphabet? True or False.
+    """
+    for i in sequence_of_symbols: 
+        if i not in alphabet: return False
+    return True 
 
 
-def addVariableIfInteger(name, value):
+def verifyNameIsNotRestricted(name):
+    """Function to verify a name for a variable or a command is not an already used name.
+    
+    Args:
+        name: Name of the variable.
+
+    Returns:
+        (bool): Is the name for the variable allowed? True or False.
+    """
+    if name not in list(VARIABLE_DICTIONARY.keys()) + list(COMMAND_DICTIONARY.keys()): return True
+    else: raise Exception("ERROR: " + name + " is a restricted name")
+
+
+def addCommand(name,parameters):
+    """Function to add or replace a command and its parameters.
+
+    Args:
+        name: The name of a command.
+        parameters: The parameters of the command.
+
+    Returns:
+        (None)
+    """
+    global command_dictionary
+    COMMAND_DICTIONARY[name]=parameters
+    COMMAND_DICTIONARY["BLOCK"] = list(COMMAND_DICTIONARY.keys()) #Python list of all the posible commands
+    COMMAND_DICTIONARY["REPEAT"][1] = list(COMMAND_DICTIONARY.keys()) #Python list of all the posible commands
+
+
+def addVariableIfInteger(name, value, base_ten_numbers_alphabet):
     """Function to save an integer as a variable, if value is an integer.
 
     Args:
@@ -124,32 +165,27 @@ def addVariableIfInteger(name, value):
     Returns:
         (None)
     """
-    if value in BASE_TEN_NUMBERS_ALPHABET:
-        VARIABLE_DICTIONARY[name] = value
-        
-    else:
-        raise Exception("ERROR: " + name + " is not an integer base 10")
-
-
+    if verifyIsInAlphabet(value, base_ten_numbers_alphabet) and verifyNameIsNotRestricted(name): 
+        global uservars
+        VARIABLE_DICTIONARY[name]=value
+    else: raise Exception("ERROR: " + name + " is not an integer base 10")
 
 
 #####def defineFunction():
 
 
-
-
 ##################################### EXECUTION #####################################
-
-
 
 
 if __name__ == "__main__":
     inputTxt = openFile(FILE_NAME)
     commandsInputFile = filterByCommand(inputTxt)
 
-    print(commandsInputFile)
+
+# DEBUG
 
 
+for ᵃ in commandsInputFile: print(ᵃ)
 
 
 #TODO:
@@ -158,3 +194,6 @@ if __name__ == "__main__":
 #   Variable names lower case 
 #   Variables no pueden tener nombres de comandos
 #   Parametros temporales para las funciones ?? PREGUNTAR
+
+# ERRORES : RESTRICTED NAME, NOT AN INTEGER BASE TEN, 
+
