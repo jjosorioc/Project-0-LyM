@@ -186,7 +186,7 @@ if __name__ == "__main__":
 # DEBUG
 
 
-for ᵃ in commandsInputFile: print(ᵃ)
+for juan_jo_es_marica_si_borra_esto in commandsInputFile: print(juan_jo_es_marica_si_borra_esto)
 
 
 #TODO:
