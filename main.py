@@ -47,7 +47,7 @@ COMMAND_DICTIONARY = {
         "REPEAT": ['int', []], # tuple -> (int, COMMAND_LIST)
         "IF": ("BLOCKEDP",'!BLOCKEDP'), # tuple -> (bool,bool)
         "DEFINE": ('variable_name', 'int'), # tuple -> (str, int)
-        'TO': ('f',) #????
+        'TO': ('f',) #https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnDX4WbIN8zHHHv-5IP7p-9UtY8J5COEVm5A&usqp=CAU
 }
 
 COMMAND_DICTIONARY["BLOCK"] = list(COMMAND_DICTIONARY.keys()) #Python list of all the posible commands
