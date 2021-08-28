@@ -1,18 +1,61 @@
 """
 Project 0
 - Juan José Osorio (@jjosorioc)
-- Luis Rubiano (@larubiano)
+- Luis Rubiano (@larubiano0)
 """
+
+
 # SETTINGS
+
 
 file_name = "commands.txt" #Name of the text file 
 
+
 # CONSTANTS 
 
+
 base_ten_numbers_alphabet = "0123456789" #An alphabet with all the possible symbols that can be found in a base ten number.
-global variables #Python dictionary of all posible user created variables
+lowercase_alphabet = "abcdefghijklmnopqrstuvwxyz" #An alphabet with all the possible symbols that can be found in a base ten number.
+
+
+# DATA STRUCTURES
+
+
+uservars = {} #Python dictionary of all posible user created variables
+uservars_list = list(uservars.keys())
+
+command_dictionary = {
+        'MOVE': 'int',
+        'RIGHT': 'int',
+        'LEFT': 'int',
+        'ROTATE': 'int',
+        'LOOK': [ # Coordinate list north east south west
+            'N',
+            'E',
+            'W',
+            'S'
+        ],
+        "DROP": 'int',
+        "FREE": 'int',
+        "PICK": 'int',
+        "POP": 'int',
+        "CHECK": (['C', 'B'], 'int'), # tuple -> (list, int)
+        "BLOCKEDP": None, #bool
+        '!BLOCKEDP': None, #bool
+        "NOP": None, #Robot doesn't do shit
+        "BLOCK": [], #All the possible commands that can be after a "BLOCK" statement
+        "REPEAT": ['int', []], # list -> (int, command_list)
+        "IF": ("BLOCKEDP",'!BLOCKEDP'), # tuple -> (bool,bool)
+        "DEFINE": ('lowercase_string', 'int'), # tuple -> (str, int)
+        'TO': 'function' 
+                      }
+command_list = list(command_dictionary.keys()) #Python list of all the posible commands
+command_dictionary["BLOCK"]=command_list
+command_dictionary["REPEAT"][1]=command_list
+
 
 # FUNCTIONS
+
 
 def openFile(file_name: str)->list[str]:
     """Function to read the text file.
@@ -23,7 +66,10 @@ def openFile(file_name: str)->list[str]:
     Returns:
         lines (list[str]): Method readlines() for the text file.
     """
-    with open("commands.txt", "r") as cmdFile:
+    this_folder = os.path.dirname(os.path.abspath(__file__))
+    file_name = os.path.join(this_folder, file_name)
+
+    with open(file_name, "r") as cmdFile:
         lines = cmdFile.readlines()
         lines.append("\n")
     return lines
@@ -67,7 +113,7 @@ def filterByCommand(lines: list[str])->list[str]:
     return nuevaLista
 
 
-def VerifyIsInAlphabet(sequence_of_symbols, alphabet)->bool:
+def verifyIsInAlphabet(sequence_of_symbols, alphabet)->bool:
     """Function to verify a sequence of symbols is over a given alphabet.
     
     Args:
@@ -82,6 +128,53 @@ def VerifyIsInAlphabet(sequence_of_symbols, alphabet)->bool:
     return True 
 
 
+def verifyNameIsNotRestricted(name):
+    """Function to verify a name for a variable or a command is not an already used name.
+    
+    Args:
+        name: Name of the variable.
+
+    Returns:
+        (bool): Is the name for the variable allowed? True or False.
+    """
+    if name not in uservars_list + command_list: return True
+    else: raise Exception("ERROR: " + name + " is a restricted name")
+
+
+def addVariable(name,value):
+    """Function to add or replace a variable and its value.
+
+    Args:
+        name: The name of a variable.
+        value: A value of a variable.
+
+    Returns:
+        (None)
+    """
+    global uservars
+    uservars[name]=value
+    global uservars_list 
+    uservars_list = list(uservars.keys())
+
+
+def addCommand(name,parameters):
+    """Function to add or replace a command and its parameters.
+
+    Args:
+        name: The name of a command.
+        parameters: The parameters of the command.
+
+    Returns:
+        (None)
+    """
+    global command_dictionary
+    command_dictionary[name]=parameters
+    global command_list
+    command_list = list(command_dictionary.keys()) #Python list of all the posible commands
+    command_dictionary["BLOCK"]=command_list
+    command_dictionary["REPEAT"][1]=command_list
+
+
 def addIntegerVariable(name, value, base_ten_numbers_alphabet):
     """Function to save an integer as a variable, if value is an integer.
 
@@ -93,58 +186,33 @@ def addIntegerVariable(name, value, base_ten_numbers_alphabet):
     Returns:
         (None)
     """
-    if VerifyIsInAlphabet(value, base_ten_numbers_alphabet)==True: variables[name]=value
+    if verifyIsInAlphabet(value, base_ten_numbers_alphabet) and verifyNameIsNotRestricted(name): addVariable(name,value)
     else: raise Exception("ERROR: " + name + " is not an integer base 10")
+    
 
-#####def defineFunction():
-
-# DATA STRUCTURES
-
-variables = {} #Python dictionary of all posible user created variables
-
-command_dictionary = {
-        'MOVE': 'int',
-        'RIGHT': 'int',
-        'LEFT': 'int',
-        'ROTATE': 'int',
-        'LOOK': [ # Coordinate list north east south west
-            'N',
-            'E',
-            'W',
-            'S'
-        ],
-        "DROP": 'int',
-        "FREE": 'int',
-        "PICK": 'int',
-        "POP": 'int',
-        "CHECK": (['C', 'B'], 'int'), # tuple -> (list, int)
-        "BLOCKEDP": None, #bool
-        '!BLOCKEDP': None, #bool
-        "NOP": None, #Robot doesn't do shit
-        "BLOCK": [], #All the possible commands that can be after a "BLOCK" statement
-        "REPEAT": ('int', []), # tuple -> (int, command_list)
-        "IF": ("BLOCKEDP",'!BLOCKEDP'), # tuple -> (bool,bool)
-        "DEFINE": ('variable_name', 'int'), # tuple -> (str, int)
-        'TO': ('f',) #????
-
-}
-command_list = list(command_dictionary.keys()) #Python list of all the posible commands
-command_dictionary["BLOCK"]=command_list
-command_dictionary["REPEAT"][1]=command_list
-
-
-
-
+def defineFunction():
+    pass #If not restricted add command
 
 
 # EXECUTION
+
+
 lines = openFile(file_name)
-print(lines)
 
 
+# DEBUG
 
 
-# DEV COMMENTS
-    ##########Verificar recursión
-    ########## Sistema Try Except para encontrar errores
+ñ = filterByCommand(lines) 
+for ᵃ in ñ: print(ᵃ)
+
+
+"""DEV COMMENTS
+    ########## Variables no pueden tener nombres de comandos
+    ########## Verificar recursión
     ########## Variable names lower case
+    ########## Parametros temporales para las funciones TO
+    ########## Preguntar si se debe permitir la creación de variables locales
+
+    # ERRORES : RESTRICTED NAME, NOT AN INTEGER BASE TEN, 
+"""
