@@ -1,10 +1,14 @@
 """
 Project 0
 - Juan José Osorio (@jjosorioc)
-- Luis Rubiano (@larubiano)
+- Luis Rubiano (@larubiano0)
 """
+
+
 # SETTINGS
 
+
+import os
 FILE_NAME = "commands.txt" #Name of the text file 
 
 
@@ -52,6 +56,7 @@ COMMAND_DICTIONARY["REPEAT"][1] = list(COMMAND_DICTIONARY.keys()) #Python list o
 
 
 # FUNCTIONS
+
 
 def openFile(file_name: str)->list[str]:
     """Function to read the text file.
@@ -129,14 +134,20 @@ def addVariableIfInteger(name, value):
 
 
 
+# EXECUTION
 
 #####def defineFunction():
 
+if __name__ == "__main__":
+    inputTxt = openFile(FILE_NAME)
+    commandsInputFile = filterByCommand(inputTxt)
 
 
+# DEBUG
 
 # EXECUTION
 
+for ᵃ in commandsInputFile: print(ᵃ)
 
 if __name__ == "__main__":
     inputTxt = openFile(FILE_NAME)
@@ -144,8 +155,9 @@ if __name__ == "__main__":
 
     print(commandsInputFile)
 
-
 #TODO:
 #   Verificar recursión
 #   Sistema Try Except para encontrar errores
-#   Variable names lower case
+#   Variable names lower case 
+#   Variables no pueden tener nombres de comandos
+#   Parametros temporales para las funciones ?? PREGUNTAR
