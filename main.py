@@ -66,6 +66,7 @@ def openFile(file_name: str)->list[str]:
     Returns:
         lines (list[str]): Method readlines() for the text file.
     """
+    file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)), file_name)
     with open(file_name, "r") as cmdFile:
         lines = cmdFile.readlines()
         lines.append("\n")
