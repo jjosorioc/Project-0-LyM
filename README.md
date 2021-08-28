@@ -1,5 +1,4 @@
 # Project-0-LyM
-Juan José Osorio and Luis Alejandro Rubiano
-
+Juan José Osorio @jjosorioc and Luis Alejandro Rubiano @larubiano0
 
 ###

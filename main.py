@@ -8,7 +8,8 @@ Project 0
 # SETTINGS
 
 
-file_name = "commands.txt" #Name of the text file 
+import os
+FILE_NAME = "commands.txt" #Name of the text file 
 
 
 # CONSTANTS 
@@ -21,8 +22,8 @@ lowercase_alphabet = "abcdefghijklmnopqrstuvwxyz" #An alphabet with all the poss
 # DATA STRUCTURES
 
 
-uservars = {} #Python dictionary of all posible user created variables
-uservars_list = list(uservars.keys())
+variable_dictionary = {} #Python dictionary of all posible user created variables
+variable_list = list(variable_dictionary.keys())
 
 command_dictionary = {
         'MOVE': 'int',
@@ -137,7 +138,7 @@ def verifyNameIsNotRestricted(name):
     Returns:
         (bool): Is the name for the variable allowed? True or False.
     """
-    if name not in uservars_list + command_list: return True
+    if name not in variable_list + command_list: return True
     else: raise Exception("ERROR: " + name + " is a restricted name")
 
 
@@ -152,9 +153,9 @@ def addVariable(name,value):
         (None)
     """
     global uservars
-    uservars[name]=value
-    global uservars_list 
-    uservars_list = list(uservars.keys())
+    variable_dictionary[name]=value
+    global variable_list 
+    variable_list = list(variable_dictionary.keys())
 
 
 def addCommand(name,parameters):
@@ -197,22 +198,20 @@ def defineFunction():
 # EXECUTION
 
 
-lines = openFile(file_name)
-
+if __name__ == "__main__":
+    inputTxt = openFile(FILE_NAME)
+    commandsInputFile = filterByCommand(inputTxt)
 
 # DEBUG
 
-
-ñ = filterByCommand(lines) 
-for ᵃ in ñ: print(ᵃ)
+for ᵃ in commandsInputFile: print(ᵃ)
 
 
-"""DEV COMMENTS
-    ########## Variables no pueden tener nombres de comandos
-    ########## Verificar recursión
-    ########## Variable names lower case
-    ########## Parametros temporales para las funciones TO
-    ########## Preguntar si se debe permitir la creación de variables locales
+#TODO:
+#   Verificar recursión
+#   Sistema Try Except para encontrar errores
+#   Variable names lower case 
+#   Variables no pueden tener nombres de comandos
+#   Parametros temporales para las funciones ?? PREGUNTAR
 
-    # ERRORES : RESTRICTED NAME, NOT AN INTEGER BASE TEN, 
-"""
+# ERRORES : RESTRICTED NAME, NOT AN INTEGER BASE TEN, 
