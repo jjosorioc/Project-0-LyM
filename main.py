@@ -111,6 +111,19 @@ def filterByCommand(lines: list[str])->list[str]:
     return nuevaLista
 
 
+def verifyIsInAlphabet(sequence_of_symbols, alphabet)->bool:
+    """Function to verify a sequence of symbols is over a given alphabet.
+    
+    Args:
+        sequence_of_symbols: An arbitrary sequence of symbols.
+        alphabet: An alphabet
+    Returns:
+        (bool): Is the sequence of symbols over the alphabet? True or False.
+    """
+    for i in sequence_of_symbols: 
+        if i not in alphabet: return False
+    return True 
+
 
 def verifyNameIsNotRestricted(name):
     """Function to verify a name for a variable or a command is not an already used name.
@@ -155,7 +168,7 @@ def addVariableIfInteger(name, value):
     Returns:
         (None)
     """
-    if verifyNameIsNotRestricted(name): 
+    if verifyIsInAlphabet(value, BASE_TEN_NUMBERS_ALPHABET) and verifyNameIsNotRestricted(name): 
         VARIABLE_DICTIONARY[name]=value
     else: raise Exception("ERROR: " + name + " is not an integer base 10")
 
@@ -164,6 +177,8 @@ def addVariableIfInteger(name, value):
 
 
 ##################################### EXECUTION #####################################
+
+
 luchoNoSabeEscribirCodigo = True
 
 if __name__ == "__main__" and luchoNoSabeEscribirCodigo:
@@ -171,12 +186,11 @@ if __name__ == "__main__" and luchoNoSabeEscribirCodigo:
     commandsInputFile = filterByCommand(inputTxt)
 
 
-# DEBUG
+##################################### DEBUG #####################################
 
 
 for juan_jo_es_marica_si_borra_esto in commandsInputFile:
     print(juan_jo_es_marica_si_borra_esto)
-
 
 
 #TODO:
@@ -187,4 +201,3 @@ for juan_jo_es_marica_si_borra_esto in commandsInputFile:
 #   Parametros temporales para las funciones ?? PREGUNTAR
 
 # ERRORES : RESTRICTED NAME, NOT AN INTEGER BASE TEN, 
-
