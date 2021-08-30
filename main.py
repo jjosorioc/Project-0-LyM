@@ -110,6 +110,31 @@ def filterByCommand(lines: list[str])->list[str]:
     return nuevaLista
 
 
+
+
+def filterByToken(lista: list[str])->list[str]:
+    """List to filter the 'commandsInputFile' list by each token.
+
+    Args:
+        lista (list[str]): List by commands.
+
+    Returns:
+        list[str]: List by each token.
+    """
+
+    newList = []
+
+    for command in lista:
+        splitDelCommand = command.split(' ') # Nueva lista separada por los espacios
+
+        for token in splitDelCommand:
+            newList.append(token)
+
+    return newList
+
+
+
+
 def verifyIsInAlphabet(sequence_of_symbols, alphabet)->bool:
     """Function to verify a sequence of symbols is over a given alphabet.
     
@@ -195,13 +220,14 @@ luchoNoSabeEscribirCodigo = True
 if __name__ == "__main__" and luchoNoSabeEscribirCodigo:
     inputTxt = openFile(FILE_NAME)
     commandsInputFile = filterByCommand(inputTxt)
+    tokenList = filterByToken(commandsInputFile)
 
 
 ##################################### DEBUG #####################################
 
+for i in tokenList:
+    print(i)
 
-for juan_jo_es_marica_si_borra_esto in commandsInputFile:
-    print(juan_jo_es_marica_si_borra_esto)
 
 
 #TODO:
