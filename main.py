@@ -110,8 +110,6 @@ def filterByCommand(lines: list[str])->list[str]:
     return nuevaLista
 
 
-
-
 def filterByToken(lista: list[str])->list[str]:
     """List to filter the 'commandsInputFile' list by each token.
 
@@ -131,8 +129,6 @@ def filterByToken(lista: list[str])->list[str]:
             newList.append(token)
 
     return newList
-
-
 
 
 def verifyIsInAlphabet(sequence_of_symbols, alphabet)->bool:
