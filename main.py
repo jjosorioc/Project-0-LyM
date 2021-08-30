@@ -42,7 +42,7 @@ COMMAND_DICTIONARY = {
         "CHECK": (['C', 'B'], 'int'), # tuple -> (list, int)
         "BLOCKEDP": None, #bool
         '!BLOCKEDP': None, #bool
-        "NOP": None, #Robot doesn't do shit
+        "NOP": None, #Robot doesn't do anything
         "BLOCK": [], #All the possible commands that can be after a "BLOCK" statement
         "REPEAT": ['int', []], # tuple -> (int, COMMAND_LIST)
         "IF": ("BLOCKEDP",'!BLOCKEDP'), # tuple -> (bool,bool)
@@ -111,20 +111,6 @@ def filterByCommand(lines: list[str])->list[str]:
     return nuevaLista
 
 
-def verifyIsInAlphabet(sequence_of_symbols, alphabet)->bool:
-    """Function to verify a sequence of symbols is over a given alphabet.
-    
-    Args:
-        sequence_of_symbols: An arbitrary sequence of symbols.
-        alphabet: An alphabet
-
-    Returns:
-        (bool): Is the sequence of symbols over the alphabet? True or False.
-    """
-    for i in sequence_of_symbols: 
-        if i not in alphabet: return False
-    return True 
-
 
 def verifyNameIsNotRestricted(name):
     """Function to verify a name for a variable or a command is not an already used name.
@@ -135,8 +121,11 @@ def verifyNameIsNotRestricted(name):
     Returns:
         (bool): Is the name for the variable allowed? True or False.
     """
-    if name not in list(VARIABLE_DICTIONARY.keys()) + list(COMMAND_DICTIONARY.keys()): return True
-    else: raise Exception("ERROR: " + name + " is a restricted name")
+    if name not in list(VARIABLE_DICTIONARY.keys()) + list(COMMAND_DICTIONARY.keys()):
+        return True
+    
+    else:
+        raise Exception("ERROR: " + name + " is a restricted name")
 
 
 def addCommand(name,parameters):
@@ -149,13 +138,13 @@ def addCommand(name,parameters):
     Returns:
         (None)
     """
-    global command_dictionary
+    
     COMMAND_DICTIONARY[name]=parameters
     COMMAND_DICTIONARY["BLOCK"] = list(COMMAND_DICTIONARY.keys()) #Python list of all the posible commands
     COMMAND_DICTIONARY["REPEAT"][1] = list(COMMAND_DICTIONARY.keys()) #Python list of all the posible commands
 
 
-def addVariableIfInteger(name, value, base_ten_numbers_alphabet):
+def addVariableIfInteger(name, value):
     """Function to save an integer as a variable, if value is an integer.
 
     Args:
@@ -166,8 +155,7 @@ def addVariableIfInteger(name, value, base_ten_numbers_alphabet):
     Returns:
         (None)
     """
-    if verifyIsInAlphabet(value, base_ten_numbers_alphabet) and verifyNameIsNotRestricted(name): 
-        global uservars
+    if verifyNameIsNotRestricted(name): 
         VARIABLE_DICTIONARY[name]=value
     else: raise Exception("ERROR: " + name + " is not an integer base 10")
 
@@ -176,9 +164,9 @@ def addVariableIfInteger(name, value, base_ten_numbers_alphabet):
 
 
 ##################################### EXECUTION #####################################
+luchoNoSabeEscribirCodigo = True
 
-
-if __name__ == "__main__":
+if __name__ == "__main__" and luchoNoSabeEscribirCodigo:
     inputTxt = openFile(FILE_NAME)
     commandsInputFile = filterByCommand(inputTxt)
 
@@ -186,7 +174,9 @@ if __name__ == "__main__":
 # DEBUG
 
 
-for juan_jo_es_marica_si_borra_esto in commandsInputFile: print(juan_jo_es_marica_si_borra_esto)
+for juan_jo_es_marica_si_borra_esto in commandsInputFile:
+    print(juan_jo_es_marica_si_borra_esto)
+
 
 
 #TODO:
