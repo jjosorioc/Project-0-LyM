@@ -9,6 +9,7 @@ Project 0
 
 
 import os
+from posixpath import split
 FILE_NAME = "commands.txt" #Name of the text file 
 
 
@@ -47,11 +48,10 @@ COMMAND_DICTIONARY = {
         "REPEAT": ['int', []], # tuple -> (int, COMMAND_LIST)
         "IF": ("BLOCKEDP",'!BLOCKEDP'), # tuple -> (bool,bool)
         "DEFINE": ('variable_name', 'int'), # tuple -> (str, int)
-        'TO': ('f',) 
+        'TO': ['f' , ':param' ,'OUTPUT', [], 'END']
 }
 
-COMMAND_DICTIONARY["BLOCK"] = list(COMMAND_DICTIONARY.keys()) #Python list of all the posible commands
-COMMAND_DICTIONARY["REPEAT"][1] = list(COMMAND_DICTIONARY.keys()) #Python list of all the posible commands
+COMMAND_DICTIONARY["BLOCK"] = COMMAND_DICTIONARY["REPEAT"][1] = COMMAND_DICTIONARY["TO"][3] = list(COMMAND_DICTIONARY.keys()) #Python list of all the posible commands
 
 
 ##################################### FUNCTIONS #####################################
@@ -138,7 +138,7 @@ def verifyNameIsNotRestricted(name):
         return True
     
     else:
-        raise Exception("ERROR: " + name + " is a restricted name")
+        return False
 
 
 def addCommand(name,parameters):
@@ -151,10 +151,8 @@ def addCommand(name,parameters):
     Returns:
         (None)
     """
-    
     COMMAND_DICTIONARY[name]=parameters
-    COMMAND_DICTIONARY["BLOCK"] = list(COMMAND_DICTIONARY.keys()) #Python list of all the posible commands
-    COMMAND_DICTIONARY["REPEAT"][1] = list(COMMAND_DICTIONARY.keys()) #Python list of all the posible commands
+    COMMAND_DICTIONARY["BLOCK"] = COMMAND_DICTIONARY["REPEAT"][1] = COMMAND_DICTIONARY["TO"][3] = list(COMMAND_DICTIONARY.keys()) #Python list of all the posible commands
 
 
 def addVariableIfInteger(name, value):
@@ -163,18 +161,31 @@ def addVariableIfInteger(name, value):
     Args:
         name: The name of a variable.
         value: A base ten integer.
-        base_ten_numbers_alphabet: An alphabet with all the possible symbols that can be found in a base ten number.
 
     Returns:
         (None)
     """
-    if verifyIsInAlphabet(value, BASE_TEN_NUMBERS_ALPHABET) and verifyNameIsNotRestricted(name): 
+    if verifyIsInAlphabet(value, BASE_TEN_NUMBERS_ALPHABET) and verifyNameIsNotRestricted(name) and verifyIsInAlphabet(name, LOWERCASE_ALPHABET): 
         VARIABLE_DICTIONARY[name]=value
-    else: raise Exception("ERROR: " + name + " is not an integer base 10")
+    else: raise Exception("ERROR: Grammar error regarding " + name + " varkable")
 
 
-#####def defineFunction():
+def defineFunction(TO_command):
+    """Function to define a new TO command.
 
+    Args:
+        TO_command: Python string with the whole TO function.
+
+    Returns:
+        (None)
+    """
+    split_list = TO_command.split(" ")
+    name = split_list[1]
+    if not (split_list[0]=="TO" and split_list[-1]=="END" and ("OUTPUT" in split_list)):
+        raise Exception("ERROR: Wrong grammar for the function: " + name)
+    if not (verifyIsInAlphabet(name, BASE_TEN_NUMBERS_ALPHABET) and verifyNameIsNotRestricted(name)): 
+        raise Exception("ERROR: Wrong name for the function: " + name)
+    pass
 
 ##################################### EXECUTION #####################################
 
@@ -199,5 +210,3 @@ for juan_jo_es_marica_si_borra_esto in commandsInputFile:
 #   Variable names lower case 
 #   Variables no pueden tener nombres de comandos
 #   Parametros temporales para las funciones ?? PREGUNTAR
-
-# ERRORES : RESTRICTED NAME, NOT AN INTEGER BASE TEN, 
