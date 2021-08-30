@@ -9,7 +9,6 @@ Project 0
 
 
 import os
-from posixpath import split
 FILE_NAME = "commands.txt" #Name of the text file 
 
 
@@ -186,6 +185,7 @@ def defineFunction(TO_command):
     if not (verifyIsInAlphabet(name, BASE_TEN_NUMBERS_ALPHABET) and verifyNameIsNotRestricted(name)): 
         raise Exception("ERROR: Wrong name for the function: " + name)
     pass
+
 
 ##################################### EXECUTION #####################################
 
