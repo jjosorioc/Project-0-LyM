@@ -42,12 +42,12 @@ COMMAND_DICTIONARY = {
         "CHECK": (['C', 'B'], 'int'), # tuple -> (list, int)
         "BLOCKEDP": None, #bool
         '!BLOCKEDP': None, #bool
-        "NOP": None, #Robot doesn't do anything
+        "NOP": None, #Robot ain't doin' shit
         "BLOCK": [], #All the possible commands that can be after a "BLOCK" statement
         "REPEAT": ['int', []], # tuple -> (int, COMMAND_LIST)
         "IF": ("BLOCKEDP",'!BLOCKEDP'), # tuple -> (bool,bool)
         "DEFINE": ('variable_name', 'int'), # tuple -> (str, int)
-        'TO': ('f',) #https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnDX4WbIN8zHHHv-5IP7p-9UtY8J5COEVm5A&usqp=CAU
+        'TO': ('f',) 
 }
 
 COMMAND_DICTIONARY["BLOCK"] = list(COMMAND_DICTIONARY.keys()) #Python list of all the posible commands
