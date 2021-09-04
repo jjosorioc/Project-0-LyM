@@ -25,16 +25,15 @@ LOWERCASE_ALPHABET = "abcdefghijklmnopqrstuvwxyz" #An alphabet with all the poss
 VARIABLE_DICTIONARY = {} #Python dictionary of all posible user created variables
 
 COMMAND_DICTIONARY = {
-        'MOVE': ('int',),
+        'MOVE': ('int',), #Tuple
         'RIGHT': ('int',),
         'LEFT': ('int',),
         'ROTATE': ('int',),
         'LOOK': ([ # Coordinate tuple north east south west
             'N',
-            'E',
-            'W',
+        'E',    'W',
             'S'
-        ],),
+                ],),
         "DROP": ('int',),
         "FREE": ('int',),
         "PICK": ('int',),
@@ -130,11 +129,12 @@ def filterByToken(lista: list[str])->list[str]:
     return newList
 
 
-def readLineByLine(lines: list[str]):
+def readLineByLine(lines: list[str], localVars = None):
     """Reads the code line by line.
 
     Args:
         lista (list[str]): List by each token.
+        localVars (dict): Local variables of a function, by default none, can be used in recursion cases.  
 
     Returns:
         (None)
@@ -272,7 +272,9 @@ if __name__ == "__main__":
     commandsInputFile = filterByCommand(inputTxt)
     tokenList = filterByToken(commandsInputFile)
     readLineByLine(tokenList)
-    print("\n"*5 + "Everything's aight mate ;)" + "\n"*5)
+    print("\n"*10 + "Everything's aight chief ;)" + "\n"*10)
+    import webbrowser                                                               ## DELETE
+    webbrowser.open('https://media.giphy.com/media/XreQmk7ETCak0/giphy.gif', new=2) ## LATER
 
 
 ##################################### DEBUG #####################################
