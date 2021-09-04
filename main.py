@@ -352,6 +352,7 @@ if __name__ == "__main__":
 
 #TODO: Casos en los que se inicia un block, funcion, etc, pero nunca se acaba
 #Repeat function
+#Functions with name in UPPERCASE
 
 """
 ROTATE
