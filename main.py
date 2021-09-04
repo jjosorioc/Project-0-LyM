@@ -363,6 +363,8 @@ if __name__ == "__main__":
 
 ##################################### DEBUG #####################################
 
+#TODO: Encontrar errores: Que pasa cuando se acaba el código y no se encuentra un delimitador ")" o "]"
+
 """
 ROTATE
 3
