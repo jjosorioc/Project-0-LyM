@@ -9,7 +9,10 @@ Project 0
 
 
 import os
-FILE_NAME = "commands.txt" #Name of the text file 
+#FILE_NAME = "commands.txt" #Name of the text file 
+
+# commands.txt
+# deletelater.txt
 
 
 ##################################### CONSTANTS ##################################### 
@@ -42,7 +45,7 @@ COMMAND_DICTIONARY = {
         "CHECK": (['C', 'B'], 'int',), # tuple -> (list, int)
         "BLOCKEDP": None, #bool
         '!BLOCKEDP': None, #bool
-        "NOP": None, #Robot ain't doin' shit
+        "NOP": None, 
         "BLOCK": ("error",), #Block command without a previous '('
         "REPEAT": ("error",),
         "IF": (["BLOCKEDP",'!BLOCKEDP'], "[", "commands", "]"), 
@@ -69,8 +72,10 @@ def openFile(file_name: str)->list[str]:
     file_name = os.path.join(os.path.dirname(os.path.abspath(__file__)), file_name)
     with open(file_name, "r") as cmdFile:
         lines = cmdFile.readlines()
-        lines.append("\n")
+        lines.append("\n") # Adds blank line so the filterByCommand function wont't show an error.
     return lines
+
+
 
 
 def filterByCommand(lines: list[str])->list[str]:
@@ -111,6 +116,8 @@ def filterByCommand(lines: list[str])->list[str]:
     return nuevaLista
 
 
+
+
 def filterByToken(lista: list[str])->list[str]:
     """List to filter the 'commandsInputFile' list by each token.
 
@@ -121,7 +128,7 @@ def filterByToken(lista: list[str])->list[str]:
         list[str]: List by each token.
     """
 
-    newList = []
+    newList = []  # lista separada por los espacios
     newNewList = []
 
     for command in lista:
@@ -135,10 +142,13 @@ def filterByToken(lista: list[str])->list[str]:
             newList.append(token)
 
     for i in newList:
-        if i!='':
+        if i != '':
+            # i es cada Token, incluyendo: [] ()
             newNewList.append(i)
 
     return newNewList
+
+
 
 
 def readLineByLine(lines: list[str], localVars = None):
@@ -151,14 +161,14 @@ def readLineByLine(lines: list[str], localVars = None):
     Returns:
         (None)
     """
-    countA = 0 #Current token
+    countA = 0 #Current index of the Token
 
-    while countA<len(lines):
+    while countA < len(lines):
         
         
         if lines[countA] not in COMMAND_DICTIONARY:
-            print(lines[countA])
-            print(COMMAND_DICTIONARY)
+            #print(lines[countA])
+            #print(COMMAND_DICTIONARY)
             raise Exception("\n"*5 + "ERROR: Undefined command " + lines[countA] + "\n"*5)
         
 
@@ -172,15 +182,16 @@ def readLineByLine(lines: list[str], localVars = None):
 
         if command == "(BLOCK":
             recursiveLines = []
-            while lines[countA+1]!=")":
+            while lines[countA+1] != ")":  #While the block hasn't stopped.
                 countA += 1
                 recursiveLines.append(lines[countA])
+
             countA += 1
             readLineByLine(recursiveLines)
 
         elif command == "(REPEAT":
             countA += 1
-            assertIsAnInteger(lines[countA])
+            isIntegerOrVariable(lines[countA])
             recursiveLines = []
             countA += 1
             if not lines[countA] == "[":
@@ -227,7 +238,7 @@ def readLineByLine(lines: list[str], localVars = None):
             while countB < len(COMMAND_DICTIONARY[command]):
                 countA += 1
                 if COMMAND_DICTIONARY[command][countB] == "int":
-                    assertIsAnInteger(lines[countA],localVars)
+                    isIntegerOrVariable(lines[countA],localVars)
                 elif COMMAND_DICTIONARY[command][countB] == 'variable_name':
                     addVariableIfInteger(lines[countA],lines[countA+1])
                 elif COMMAND_DICTIONARY[command][countB] == 'error':
@@ -254,7 +265,7 @@ def verifyIsInAlphabet(sequence_of_symbols, alphabet)->bool:
     return True 
 
 
-def verifyNameIsNotRestricted(name):
+def verifyVariableNameIsAllowed(name: str):
     """Function to verify a name for a variable or a command is not an already used name.
     
     Args:
@@ -270,7 +281,7 @@ def verifyNameIsNotRestricted(name):
         return False
 
 
-def assertIsAnInteger(n, localVars = None):
+def isIntegerOrVariable(n, localVars = None):
     """Function to verify a parameter is either an integer or a user-saved integer variable.
     
     Args:
@@ -288,7 +299,7 @@ def assertIsAnInteger(n, localVars = None):
             raise Exception("\n"*5 + "ERROR: " + n + " variable is undefined" + "\n"*5)
 
 
-def addCommand(name, args):
+def addCommand(name: str, args):
     """Function to add or replace a command and its parameters.
 
     Args:
@@ -298,10 +309,10 @@ def addCommand(name, args):
     Returns:
         (None)
     """
-    COMMAND_DICTIONARY[name]=args
+    COMMAND_DICTIONARY[name] = args
 
 
-def addVariableIfInteger(name, value):
+def addVariableIfInteger(name: str, value):
     """Function to save an integer as a variable, if value is an integer.
 
     Args:
@@ -311,9 +322,10 @@ def addVariableIfInteger(name, value):
     Returns:
         (None)
     """
-    if verifyIsInAlphabet(value, BASE_TEN_NUMBERS_ALPHABET) and verifyNameIsNotRestricted(name) and verifyIsInAlphabet(name, LOWERCASE_ALPHABET): 
-        VARIABLE_DICTIONARY[name]=value
-    else: raise Exception("\n"*5 + "ERROR: Syntax error regarding " + name + " variable" + "\n"*5)
+    if (verifyIsInAlphabet(value, BASE_TEN_NUMBERS_ALPHABET)) and (verifyVariableNameIsAllowed(name)) and (verifyIsInAlphabet(name, LOWERCASE_ALPHABET)): 
+        VARIABLE_DICTIONARY[name] = value
+    else:
+        raise Exception("\n"*5 + "ERROR: Syntax error regarding " + name + " variable" + "\n"*5)
 
 
 def defineFunction(split_list:list[str])->list[str]:
@@ -325,9 +337,11 @@ def defineFunction(split_list:list[str])->list[str]:
     """
     name = split_list[1]
     localVars = []
-    if not (split_list[0]=="TO" and split_list[-1]=="END" and ("OUTPUT" in split_list)):
+
+    if not ((split_list[0] == "TO") and (split_list[-1]=="END") and ("OUTPUT" in split_list)):
         raise Exception("\n"*5 + "ERROR: Wrong syntax for the function: " + name + "\n"*5)
-    if not (verifyIsInAlphabet(name, LOWERCASE_ALPHABET + UPPERCASE_ALPHABET + BASE_TEN_NUMBERS_ALPHABET) and verifyNameIsNotRestricted(name) and verifyIsInAlphabet(name[0], LOWERCASE_ALPHABET + UPPERCASE_ALPHABET)): 
+
+    if not (verifyIsInAlphabet(name, LOWERCASE_ALPHABET + UPPERCASE_ALPHABET + BASE_TEN_NUMBERS_ALPHABET) and verifyVariableNameIsAllowed(name) and verifyIsInAlphabet(name[0], LOWERCASE_ALPHABET + UPPERCASE_ALPHABET)): 
         raise Exception("\n"*5 + "ERROR: Wrong name for the function: " + name + "\n"*5)
     arguments = []
     count = 2
@@ -336,7 +350,7 @@ def defineFunction(split_list:list[str])->list[str]:
             break
         if split_list[count][0] != ":":
             raise Exception("\n"*5 + "ERROR: Wrong argument syntax for the function: " + name + "\n"*5)
-        if not (verifyIsInAlphabet(split_list[count][1:], LOWERCASE_ALPHABET) and verifyNameIsNotRestricted(split_list[count][1:])): 
+        if not (verifyIsInAlphabet(split_list[count][1:], LOWERCASE_ALPHABET) and verifyVariableNameIsAllowed(split_list[count][1:])): 
             raise Exception("\n"*5 + "ERROR: Wrong name for the argument: " + split_list[count][1:] + " in the function: " + name + "\n"*5)
         arguments.append(split_list[count][1:])
         localVars.append(split_list[count])
@@ -355,13 +369,18 @@ def defineFunction(split_list:list[str])->list[str]:
 
 
 if __name__ == "__main__":
+    FILE_NAME = input("\nEnter the name of the Text file without the '.txt' extension: ") + ".txt"
+
+    
     inputTxt = openFile(FILE_NAME)
+    
     commandsInputFile = filterByCommand(inputTxt)
+    
     tokenList = filterByToken(commandsInputFile)
+    
     readLineByLine(tokenList)
-    print("\n"*10 + "Everything's aight chief ;)" + "\n"*10)
-    import webbrowser                                                               ## DELETE
-    webbrowser.open('https://media.giphy.com/media/XreQmk7ETCak0/giphy.gif', new=2) ## LATER
+    
+    print("\n"*10 + "The code is good to go :)" + "\n"*10)
 
 
 ##################################### DEBUG #####################################
@@ -370,59 +389,3 @@ if __name__ == "__main__":
 #TODO: Encontrar errores: Que pasa cuando se acaba el código y no se encuentra un delimitador ")" o "]"
 
 
-"""
-ROTATE
-3
-IF
-BLOCKEDP
-[
-MOVE
-1
-NOP
-]
-(
-BLOCK
-IF
-BLOCKEDP
-[
-MOVE
-1
-NOP
-]
-LEFT
-90
-)
-DEFINE
-one
-1
-TO
-foo
-:c
-:p
-OUTPUT
-DROP
-:c
-FREE
-:p
-MOVE
-n
-END
-foo
-1
-3
-TO
-goend
-OUTPUT
-IF
-!BLOCKEDP
-[
-(
-BLOCK
-MOVE
-1
-goEnd
-)
-NOP
-]
-END
-"""
