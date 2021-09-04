@@ -127,7 +127,6 @@ def filterByToken(lista: list[str])->list[str]:
 
         for token in splitDelCommand:
             newList.append(token)
-
     return newList
 
 
@@ -161,17 +160,17 @@ def verifyNameIsNotRestricted(name):
         return False
 
 
-def addCommand(name,parameters):
+def addCommand(name, args):
     """Function to add or replace a command and its parameters.
 
     Args:
         name: The name of a command.
-        parameters: The parameters of the command.
+        args: The parameters of the command.
 
     Returns:
         (None)
     """
-    COMMAND_DICTIONARY[name]=parameters
+    COMMAND_DICTIONARY[name]=args
     COMMAND_DICTIONARY["BLOCK"] = COMMAND_DICTIONARY["REPEAT"][1] = COMMAND_DICTIONARY["TO"][3] = list(COMMAND_DICTIONARY.keys()) #Python list of all the posible commands
 
 
@@ -187,15 +186,13 @@ def addVariableIfInteger(name, value):
     """
     if verifyIsInAlphabet(value, BASE_TEN_NUMBERS_ALPHABET) and verifyNameIsNotRestricted(name) and verifyIsInAlphabet(name, LOWERCASE_ALPHABET): 
         VARIABLE_DICTIONARY[name]=value
-    else: raise Exception("ERROR: Grammar error regarding " + name + " varkable")
+    else: raise Exception("ERROR: Grammar error regarding " + name + " variable")
 
 
 def defineFunction(TO_command):
     """Function to define a new TO command.
-
     Args:
         TO_command: Python string with the whole TO function.
-
     Returns:
         (None)
     """
@@ -203,21 +200,26 @@ def defineFunction(TO_command):
     name = split_list[1]
     if not (split_list[0]=="TO" and split_list[-1]=="END" and ("OUTPUT" in split_list)):
         raise Exception("ERROR: Wrong grammar for the function: " + name)
-    if not (verifyIsInAlphabet(name, BASE_TEN_NUMBERS_ALPHABET) and verifyNameIsNotRestricted(name)): 
+    if not (verifyIsInAlphabet(name, LOWERCASE_ALPHABET) and verifyNameIsNotRestricted(name)): 
         raise Exception("ERROR: Wrong name for the function: " + name)
-    pass
-
+    arguments = []
+    count = 2
+    while True:
+        if split_list[count]=="OUTPUT":
+            break
+        if split_list[count][0] != ":":
+            raise Exception("ERROR: Wrong argument syntax for the function: " + name)
+        if not (verifyIsInAlphabet(split_list[count][1:], LOWERCASE_ALPHABET) and verifyNameIsNotRestricted(name)): 
+            raise Exception("ERROR: Wrong name for the argument: " + split_list[count][1:] + " in the function: " + name)
+        arguments.append(split_list[count][1:])
+    addCommand(name,arguments)
 
 ##################################### EXECUTION #####################################
 
-
-luchoNoSabeEscribirCodigo = True
-
-if __name__ == "__main__" and luchoNoSabeEscribirCodigo:
+if __name__ == "__main__":
     inputTxt = openFile(FILE_NAME)
     commandsInputFile = filterByCommand(inputTxt)
     tokenList = filterByToken(commandsInputFile)
-
 
 ##################################### DEBUG #####################################
 
