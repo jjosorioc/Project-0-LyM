@@ -9,7 +9,7 @@ Project 0
 
 
 import os
-FILE_NAME = "commands.txt" #Name of the text file 
+FILE_NAME = "deletelater.txt" #Name of the text file 
 
 
 ##################################### CONSTANTS ##################################### 
@@ -25,28 +25,28 @@ LOWERCASE_ALPHABET = "abcdefghijklmnopqrstuvwxyz" #An alphabet with all the poss
 VARIABLE_DICTIONARY = {} #Python dictionary of all posible user created variables
 
 COMMAND_DICTIONARY = {
-        'MOVE': 'int',
-        'RIGHT': 'int',
-        'LEFT': 'int',
-        'ROTATE': 'int',
-        'LOOK': [ # Coordinate list north east south west
+        'MOVE': ('int',),
+        'RIGHT': ('int',),
+        'LEFT': ('int',),
+        'ROTATE': ('int',),
+        'LOOK': ([ # Coordinate tuple north east south west
             'N',
             'E',
             'W',
             'S'
-        ],
-        "DROP": 'int',
-        "FREE": 'int',
-        "PICK": 'int',
-        "POP": 'int',
-        "CHECK": (['C', 'B'], 'int'), # tuple -> (list, int)
+        ],),
+        "DROP": ('int',),
+        "FREE": ('int',),
+        "PICK": ('int',),
+        "POP": ('int',),
+        "CHECK": (['C', 'B'], 'int',), # tuple -> (list, int)
         "BLOCKEDP": None, #bool
         '!BLOCKEDP': None, #bool
         "NOP": None, #Robot ain't doin' shit
         "BLOCK": [], #All the possible commands that can be after a "BLOCK" statement
         "REPEAT": ['int', []], # tuple -> (int, COMMAND_LIST)
-        "IF": ("BLOCKEDP",'!BLOCKEDP'), # tuple -> (bool,bool)
-        "DEFINE": ('variable_name', 'int'), # tuple -> (str, int)
+        "IF": (["BLOCKEDP",'!BLOCKEDP'],), # tuple -> (bool,bool)
+        "DEFINE": ('variable_name', 'int',), # tuple -> (str, int)
         'TO': ['f' , ':param' ,'OUTPUT', [], 'END']
 }
 
@@ -130,6 +130,42 @@ def filterByToken(lista: list[str])->list[str]:
     return newList
 
 
+def readLineByLine(lines: list[str]):
+    """Reads the code line by line.
+
+    Args:
+        lista (list[str]): List by each token.
+
+    Returns:
+        (None)
+    """
+    countA = 0 #Current token
+
+    while countA<len(lines):
+        if lines[countA] not in COMMAND_DICTIONARY:
+            raise Exception("\n"*5 + "ERROR: Syntax error" + "\n"*5)
+        
+        command = lines[countA] #Current command
+
+        if type(COMMAND_DICTIONARY[command]) == tuple:
+            countB = 0 #Current argument within command
+            while countB < len(COMMAND_DICTIONARY[command]):
+                countA += 1
+                if COMMAND_DICTIONARY[command][countB] == "int":
+                    assertIsAnInteger(lines[countA])
+                elif type(COMMAND_DICTIONARY[command][countB]) == list:
+                    if not lines[countA] in COMMAND_DICTIONARY[command][countB]:
+                        raise Exception("\n"*5 + "ERROR: Argument " + lines[countA] + " is incorrect" + "\n"*5)
+                countB += 1
+
+        elif type(COMMAND_DICTIONARY[command]) == list:
+            raise Exception("\n"*5 + "Mucho codigo" + "\n"*5) 
+
+        elif type(COMMAND_DICTIONARY[command]) == None:
+            pass #Robot ain't doin' shit
+
+        countA += 1
+
 def verifyIsInAlphabet(sequence_of_symbols, alphabet)->bool:
     """Function to verify a sequence of symbols is over a given alphabet.
     
@@ -160,6 +196,19 @@ def verifyNameIsNotRestricted(name):
         return False
 
 
+def assertIsAnInteger(n):
+    """Function to verify a parameter is either an integer or a user-saved integer variable.
+    
+    Args:
+        n: An integer or a user-saved integer variable.
+
+    Returns:
+        (None)
+    """
+    if not (verifyIsInAlphabet(n, BASE_TEN_NUMBERS_ALPHABET) or (n in VARIABLE_DICTIONARY)):
+        raise Exception("\n"*5 + "ERROR: " + n + " variable is undefined" + "\n"*5)
+
+
 def addCommand(name, args):
     """Function to add or replace a command and its parameters.
 
@@ -186,7 +235,7 @@ def addVariableIfInteger(name, value):
     """
     if verifyIsInAlphabet(value, BASE_TEN_NUMBERS_ALPHABET) and verifyNameIsNotRestricted(name) and verifyIsInAlphabet(name, LOWERCASE_ALPHABET): 
         VARIABLE_DICTIONARY[name]=value
-    else: raise Exception("ERROR: Grammar error regarding " + name + " variable")
+    else: raise Exception("\n"*5 + "ERROR: Grammar error regarding " + name + " variable" + "\n"*5)
 
 
 def defineFunction(TO_command):
@@ -194,43 +243,89 @@ def defineFunction(TO_command):
     Args:
         TO_command: Python string with the whole TO function.
     Returns:
-        (None)
+        list[str]: The expression inside the function to be asserted afterwards
     """
     split_list = TO_command.split(" ")
     name = split_list[1]
     if not (split_list[0]=="TO" and split_list[-1]=="END" and ("OUTPUT" in split_list)):
-        raise Exception("ERROR: Wrong grammar for the function: " + name)
+        raise Exception("\n"*5 + "ERROR: Wrong grammar for the function: " + name + "\n"*5)
     if not (verifyIsInAlphabet(name, LOWERCASE_ALPHABET) and verifyNameIsNotRestricted(name)): 
-        raise Exception("ERROR: Wrong name for the function: " + name)
+        raise Exception("\n"*5 + "ERROR: Wrong name for the function: " + name + "\n"*5)
     arguments = []
     count = 2
     while True:
         if split_list[count]=="OUTPUT":
             break
         if split_list[count][0] != ":":
-            raise Exception("ERROR: Wrong argument syntax for the function: " + name)
+            raise Exception("\n"*5 + "ERROR: Wrong argument syntax for the function: " + name + "\n"*5)
         if not (verifyIsInAlphabet(split_list[count][1:], LOWERCASE_ALPHABET) and verifyNameIsNotRestricted(name)): 
-            raise Exception("ERROR: Wrong name for the argument: " + split_list[count][1:] + " in the function: " + name)
+            raise Exception("\n"*5 + "ERROR: Wrong name for the argument: " + split_list[count][1:] + " in the function: " + name + "\n"*5)
         arguments.append(split_list[count][1:])
     addCommand(name,arguments)
 
+
 ##################################### EXECUTION #####################################
+
 
 if __name__ == "__main__":
     inputTxt = openFile(FILE_NAME)
     commandsInputFile = filterByCommand(inputTxt)
     tokenList = filterByToken(commandsInputFile)
+    readLineByLine(tokenList)
+    print("\n"*5 + "Everything's aight mate ;)" + "\n"*5)
+
 
 ##################################### DEBUG #####################################
 
-for i in tokenList:
-    print(i)
+#for i in tokenList:
+  #  print(i)
 
-
-
-#TODO:
-#   Verificar recursión
-#   Sistema Try Except para encontrar errores
-#   Variable names lower case 
-#   Variables no pueden tener nombres de comandos
-#   Parametros temporales para las funciones ?? PREGUNTAR
+"""
+ROTATE
+3
+IF
+BLOCKEDP
+[MOVE
+1
+NOP]
+(BLOCK
+IF
+BLOCKEDP
+[MOVE
+1
+NOP]
+LEFT
+90
+)
+DEFINE
+one
+1
+TO
+foo
+:c
+:p
+OUTPUT
+DROP
+:c
+FREE
+:p
+MOVE
+n
+END
+foo
+1
+3
+TO
+goend
+OUTPUT
+IF
+!BLOCKEDP
+[
+(BLOCK
+MOVE
+1
+goEnd)
+NOP
+]
+END
+"""

@@ -1,0 +1,7 @@
+ROTATE 3
+
+LOOK N
+
+NOP
+
+CHECK C 10
