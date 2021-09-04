@@ -9,7 +9,7 @@ Project 0
 
 
 import os
-FILE_NAME = "deletelater.txt" #Name of the text file 
+FILE_NAME = "commands.txt" #Name of the text file 
 
 
 ##################################### CONSTANTS ##################################### 
@@ -120,13 +120,23 @@ def filterByToken(lista: list[str])->list[str]:
     """
 
     newList = []
+    newNewList = []
 
     for command in lista:
+        command = command.replace('(',' ( ')
+        command = command.replace(')',' ) ')
+        command = command.replace('[',' [ ')
+        command = command.replace(']',' ] ')
         splitDelCommand = command.split(' ') # Nueva lista separada por los espacios
 
         for token in splitDelCommand:
             newList.append(token)
-    return newList
+
+    for i in newList:
+        if i!='':
+            newNewList.append(i)
+
+    return newNewList
 
 
 def readLineByLine(lines: list[str], localVars = None):
@@ -142,8 +152,9 @@ def readLineByLine(lines: list[str], localVars = None):
     countA = 0 #Current token
 
     while countA<len(lines):
+        
         if lines[countA] not in COMMAND_DICTIONARY:
-            raise Exception("\n"*5 + "ERROR: Syntax error" + "\n"*5)
+            raise Exception("\n"*5 + "ERROR: Undefined command " + lines[countA] + "\n"*5)
         
         command = lines[countA] #Current command
 
@@ -280,22 +291,27 @@ if __name__ == "__main__":
 ##################################### DEBUG #####################################
 
 #for i in tokenList:
-  #  print(i)
+#    print(i)
 
 """
 ROTATE
 3
 IF
 BLOCKEDP
-[MOVE
+[
+MOVE
 1
-NOP]
-(BLOCK
+NOP
+]
+(
+BLOCK
 IF
 BLOCKEDP
-[MOVE
+[
+MOVE
 1
-NOP]
+NOP
+]
 LEFT
 90
 )
@@ -323,10 +339,12 @@ OUTPUT
 IF
 !BLOCKEDP
 [
-(BLOCK
+(
+BLOCK
 MOVE
 1
-goEnd)
+goEnd
+)
 NOP
 ]
 END
