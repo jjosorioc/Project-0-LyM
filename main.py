@@ -42,16 +42,15 @@ COMMAND_DICTIONARY = {
         "BLOCKEDP": None, #bool
         '!BLOCKEDP': None, #bool
         "NOP": None, #Robot ain't doin' shit
-        "BLOCK": [], #All the possible commands that can be after a "BLOCK" statement
-        "REPEAT": ['int', []], # tuple -> (int, COMMAND_LIST)
-        "IF": (["BLOCKEDP",'!BLOCKEDP'],), # tuple -> (bool,bool)
+        "BLOCK": ("error",), #Block command without a previous '('
+        "REPEAT": ("error",),
+        "IF": (["BLOCKEDP",'!BLOCKEDP'], "[", "commands", "]"), 
         "DEFINE": ('variable_name', 'int',), # tuple -> (str, int)
-        'TO': ['f' , ':param' ,'OUTPUT', [], 'END']
+        'TO': ('f' , ':param' ,'OUTPUT', "commands", 'END'),
+        '(BLOCK':("commands",')'), #All the possible commands that can be after a "BLOCK" statement #Fix with repeat
+        "(REPEAT": ('int', "[", "commands", "]", ")"),
+        '(':None
 }
-
-COMMAND_DICTIONARY["BLOCK"] = COMMAND_DICTIONARY["REPEAT"][1] = COMMAND_DICTIONARY["TO"][3] = list(COMMAND_DICTIONARY.keys()) #Python list of all the posible commands
-
-
 ##################################### FUNCTIONS #####################################
 
 
@@ -153,27 +152,60 @@ def readLineByLine(lines: list[str], localVars = None):
 
     while countA<len(lines):
         
+
         if lines[countA] not in COMMAND_DICTIONARY:
             raise Exception("\n"*5 + "ERROR: Undefined command " + lines[countA] + "\n"*5)
         
+
         command = lines[countA] #Current command
 
+
+        if command == "(":
+            countA += 1
+            command += lines[countA]
+
+
         if type(COMMAND_DICTIONARY[command]) == tuple:
+
             countB = 0 #Current argument within command
+            
             while countB < len(COMMAND_DICTIONARY[command]):
+
                 countA += 1
+
                 if COMMAND_DICTIONARY[command][countB] == "int":
                     assertIsAnInteger(lines[countA])
+
+                elif COMMAND_DICTIONARY[command][countB] == 'variable_name':
+                    addVariableIfInteger(COMMAND_DICTIONARY[command][0],COMMAND_DICTIONARY[command][1])
+
+                elif COMMAND_DICTIONARY[command][countB] == 'error':
+                    raise Exception("\n"*5 + "ERROR: Syntax error" + "\n"*5)
+
                 elif type(COMMAND_DICTIONARY[command][countB]) == list:
                     if not lines[countA] in COMMAND_DICTIONARY[command][countB]:
                         raise Exception("\n"*5 + "ERROR: Argument " + lines[countA] + " is incorrect" + "\n"*5)
-                countB += 1
 
-        elif type(COMMAND_DICTIONARY[command]) == list:
-            raise Exception("\n"*5 + "Mucho codigo" + "\n"*5) 
+                elif COMMAND_DICTIONARY[command][countB] == '[':
+                    pass#TODO
+
+                elif COMMAND_DICTIONARY[command][countB] == 'f':
+                    pass#USARFUNCIONES
+
+                elif COMMAND_DICTIONARY[command][countB] == ':param':
+                    pass#TODO
+
+                elif COMMAND_DICTIONARY[command][countB] == 'OUTPUT':
+                    pass#TODO
+            
+                elif COMMAND_DICTIONARY[command][countB] == 'commands':
+                    pass#TODO
+
+                countB += 1
 
         elif type(COMMAND_DICTIONARY[command]) == None:
             pass #Robot ain't doin' shit
+
 
         countA += 1
 
@@ -231,7 +263,6 @@ def addCommand(name, args):
         (None)
     """
     COMMAND_DICTIONARY[name]=args
-    COMMAND_DICTIONARY["BLOCK"] = COMMAND_DICTIONARY["REPEAT"][1] = COMMAND_DICTIONARY["TO"][3] = list(COMMAND_DICTIONARY.keys()) #Python list of all the posible commands
 
 
 def addVariableIfInteger(name, value):
@@ -246,7 +277,7 @@ def addVariableIfInteger(name, value):
     """
     if verifyIsInAlphabet(value, BASE_TEN_NUMBERS_ALPHABET) and verifyNameIsNotRestricted(name) and verifyIsInAlphabet(name, LOWERCASE_ALPHABET): 
         VARIABLE_DICTIONARY[name]=value
-    else: raise Exception("\n"*5 + "ERROR: Grammar error regarding " + name + " variable" + "\n"*5)
+    else: raise Exception("\n"*5 + "ERROR: Syntax error regarding " + name + " variable" + "\n"*5)
 
 
 def defineFunction(TO_command):
