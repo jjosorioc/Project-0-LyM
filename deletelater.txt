@@ -9,21 +9,21 @@ NOP]
 LEFT 90
 )
 
-DEFINE n 1
+DEFINE juan 1
 
 TO foo :c :p
 OUTPUT
     DROP :c
     FREE :p
-    MOVE n
+    MOVE juan
 END
-foo 1 3
+foo 1 3 
 
 
-TO goend
+TO goEnd
 OUTPUT IF !BLOCKEDP [
     (BLOCK MOVE 1
-           goend)
+           goEnd)
     NOP
    ]
 END

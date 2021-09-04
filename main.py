@@ -9,7 +9,7 @@ Project 0
 
 
 import os
-FILE_NAME = "deletelater.txt" #Name of the text file 
+FILE_NAME = "commands.txt" #Name of the text file 
 
 
 ##################################### CONSTANTS ##################################### 
@@ -17,7 +17,7 @@ FILE_NAME = "deletelater.txt" #Name of the text file
 
 BASE_TEN_NUMBERS_ALPHABET = "0123456789" #An alphabet with all the possible symbols that can be found in a base ten number.
 LOWERCASE_ALPHABET = "abcdefghijklmnopqrstuvwxyz" #An alphabet with all the possible symbols that can be found in a base ten number.
-
+UPPERCASE_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" 
 
 ##################################### DATA #####################################
 
@@ -176,7 +176,20 @@ def readLineByLine(lines: list[str], localVars = None):
             readLineByLine(recursiveLines)
 
         elif command == "(REPEAT":
-            pass
+            countA += 1
+            assertIsAnInteger(lines[countA])
+            recursiveLines = []
+            countA += 1
+            if not lines[countA] == "[":
+                raise Exception("\n"*5 + "ERROR: Expected [, found " + lines[countA] +  " instead" + "\n"*5)
+            while lines[countA+1]!="]":
+                countA += 1
+                recursiveLines.append(lines[countA])
+            countA += 1
+            if not lines[countA] == ")":
+                raise Exception("\n"*5 + "ERROR: Expected ), found " + lines[countA] +  " instead" + "\n"*5)  
+            countA += 1
+            readLineByLine(recursiveLines)
 
         elif command == "TO":
             split_list = []
@@ -311,7 +324,7 @@ def defineFunction(split_list:list[str])->list[str]:
     localVars = []
     if not (split_list[0]=="TO" and split_list[-1]=="END" and ("OUTPUT" in split_list)):
         raise Exception("\n"*5 + "ERROR: Wrong syntax for the function: " + name + "\n"*5)
-    if not (verifyIsInAlphabet(name, LOWERCASE_ALPHABET) and verifyNameIsNotRestricted(name)): 
+    if not (verifyIsInAlphabet(name, LOWERCASE_ALPHABET + UPPERCASE_ALPHABET + BASE_TEN_NUMBERS_ALPHABET) and verifyNameIsNotRestricted(name) and verifyIsInAlphabet(name[0], LOWERCASE_ALPHABET + UPPERCASE_ALPHABET)): 
         raise Exception("\n"*5 + "ERROR: Wrong name for the function: " + name + "\n"*5)
     arguments = []
     count = 2
@@ -349,10 +362,6 @@ if __name__ == "__main__":
 
 
 ##################################### DEBUG #####################################
-
-#TODO: Casos en los que se inicia un block, funcion, etc, pero nunca se acaba
-#Repeat function
-#Functions with name in UPPERCASE
 
 """
 ROTATE
