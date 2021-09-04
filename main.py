@@ -19,6 +19,7 @@ BASE_TEN_NUMBERS_ALPHABET = "0123456789" #An alphabet with all the possible symb
 LOWERCASE_ALPHABET = "abcdefghijklmnopqrstuvwxyz" #An alphabet with all the possible symbols that can be found in a base ten number.
 UPPERCASE_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" 
 
+
 ##################################### DATA #####################################
 
 
@@ -51,6 +52,8 @@ COMMAND_DICTIONARY = {
         "(REPEAT": ('int', "[", "commands", "]", ")"),
         '(':None
 }
+
+
 ##################################### FUNCTIONS #####################################
 
 
@@ -363,7 +366,9 @@ if __name__ == "__main__":
 
 ##################################### DEBUG #####################################
 
+
 #TODO: Encontrar errores: Que pasa cuando se acaba el código y no se encuentra un delimitador ")" o "]"
+
 
 """
 ROTATE
