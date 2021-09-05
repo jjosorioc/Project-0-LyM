@@ -74,10 +74,3 @@ if __name__ == "__main__":
     
     print("\n"*10 + "The code is good to go :)" + "\n"*10)
 
-
-##################################### DEBUG #####################################
-
-
-#TODO: Encontrar errores: Que pasa cuando se acaba el código y no se encuentra un delimitador ")" o "]"
-
-
