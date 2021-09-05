@@ -177,7 +177,7 @@ def readLineByLine(lines: list[str], localVars = None):
             readLineByLine(recursiveLines)
             
         elif type(COMMAND_DICTIONARY[command]) == None:
-            pass #Robot ain't doin' shit
+            pass #Robot doesn't do anything
     
         else:
             countB = 0 #Current argument within command
