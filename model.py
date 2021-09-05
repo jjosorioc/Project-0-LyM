@@ -238,7 +238,7 @@ def isIntegerOrVariable(n, localVars = None):
     Returns:
         (None)
     """
-    if type(localVars)!=None:
+    if (localVars) != None:
         if not (verifyIsInAlphabet(n, BASE_TEN_NUMBERS_ALPHABET) or (n in VARIABLE_DICTIONARY) or (n in localVars)):
             raise Exception("\n"*5 + "ERROR: " + n + " variable is undefined" + "\n"*5)
     else:
